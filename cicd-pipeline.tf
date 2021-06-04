@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "tf-plan" {
-  name          = "tf-cicd-plan2"
+  name          = "tf-cicd-plan"
   description   = "Plan stage for terraform"
   service_role  = aws_iam_role.tf-codebuild-role.arn
 
@@ -19,7 +19,7 @@ resource "aws_codebuild_project" "tf-plan" {
  }
  source {
      type   = "CODEPIPELINE"
-     buildspec = file("buildspec/ ")
+     buildspec = file("buildspec/plan-buildspec.yml")
  }
 }
 
