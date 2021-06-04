@@ -71,7 +71,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
             configuration = {
                 FullRepositoryId = "gopinath1402/terraform-cicd-pipeline"
                 BranchName   = "main"
-                ConnectionArn = aws_codestarconnections_connection.example.arn
+                ConnectionArn = var.codestar_connector_credentials
                 OutputArtifactFormat = "CODE_ZIP"
             }
         }
@@ -109,7 +109,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
 
 }
 
-resource "aws_codestarconnections_connection" "terraform" {
-  name          = "connection"
-  provider_type = "GitHub"
-}
+# resource "aws_codestarconnections_connection" "terraform" {
+#   name          = "connection"
+#   provider_type = "GitHub"
+# }
