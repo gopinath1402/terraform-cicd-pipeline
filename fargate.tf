@@ -14,7 +14,7 @@ resource "aws_ecs_task_definition" "definition" {
   container_definitions    = <<DEFINITION
   [
   {
-    "image": "${aws_ecr_repository.repo.repository_url:latest}",
+    "image": "${aws_ecr_repository.repo.repository_url}:latest",
     "name": "project-container"
     }
     ]
