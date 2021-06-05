@@ -5,7 +5,6 @@ resource "aws_codebuild_project" "tf-plan" {
 
   artifacts {
     type = "CODEPIPELINE"
-    OverrideArtifactName = true
   }
 
   environment {
@@ -124,6 +123,7 @@ resource "aws_codebuild_project" "app-image-build" {
 
   artifacts {
     type = "CODEPIPELINE"
+    OverrideArtifactName = true
   }
 
   environment {
