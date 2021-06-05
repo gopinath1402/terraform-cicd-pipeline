@@ -129,7 +129,6 @@ resource "aws_codebuild_project" "app-image-build" {
     compute_type                = "BUILD_GENERAL1_SMALL"
     image                       = "aws/codebuild/standard:4.0"
     type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
   }
   source {
     type      = "CODEPIPELINE"
@@ -143,7 +142,8 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
   role_arn = aws_iam_role.tf-codepipeline-role.arn
 
   artifact_store {
-  
+    type     = "S3"
+    location = aws_s3_bucket.codepipeline_artifacts.id
   }
 
   stage {
@@ -174,7 +174,7 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
       owner           = "AWS"
       input_artifacts = ["app-code"]
       configuration = {
-        ProjectName = "app-cicd-plan"
+        ProjectName = "application-buildspec.yml"
       }
     }
   }
@@ -193,5 +193,5 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
       }
     }
   }
-  }
+  
 }

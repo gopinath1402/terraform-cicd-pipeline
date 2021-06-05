@@ -2,6 +2,10 @@ variable "dockerhub_credentials" {
   type = string
 }
 
-variable "codestar_connector_credentials" {
+variable "tf_codestar_connector_credentials" {
+  type = string
+}
+
+variable "app_codestar_connector_credentials" {
   type = string
 }
