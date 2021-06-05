@@ -127,7 +127,7 @@ resource "aws_codebuild_project" "app-image-build" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/docker:17.09.0"
+    image                       = "aws/codebuild/standard:4.0"
     type                        = "LINUX_CONTAINER"
   }
   source {
