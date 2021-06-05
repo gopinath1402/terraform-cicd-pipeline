@@ -122,7 +122,7 @@ resource "aws_codebuild_project" "app-image-build" {
   service_role = aws_iam_role.tf-codebuild-role.arn
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type = "CODEPIPELINE"
   }
 
   environment {
@@ -174,7 +174,7 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
       owner           = "AWS"
       input_artifacts = ["app-code"]
       configuration = {
-        ProjectName = "application-buildspec.yml"
+        ProjectName = "app-image-build"
       }
     }
   }
