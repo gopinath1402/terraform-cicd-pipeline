@@ -126,12 +126,13 @@ resource "aws_codebuild_project" "app-image-build" {
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
-    type                        = "LINUX_CONTAINER"
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image        = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
+    type         = "LINUX_CONTAINER"
+
   }
   source {
-    type      = "CODEPIPELINE"
+    type = "CODEPIPELINE"
   }
 }
 
@@ -149,6 +150,7 @@ resource "aws_codebuild_project" "application-apply" {
     image                       = "hashicorp/terraform:0.14.3"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "SERVICE_ROLE"
+    privileged_mode             = true
     registry_credential {
       credential          = var.dockerhub_credentials
       credential_provider = "SECRETS_MANAGER"
@@ -217,5 +219,5 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
       }
     }
   }
-  
+
 }
