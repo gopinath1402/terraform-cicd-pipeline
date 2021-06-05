@@ -127,7 +127,7 @@ resource "aws_codebuild_project" "app-image-build" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:4.0"
+    image                       = "aws/codebuild/docker:17.09.0"
     type                        = "LINUX_CONTAINER"
   }
   source {
@@ -180,10 +180,10 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
   }
 
   stage {
-    name = "deply"
+    name = "Deploy"
     action {
-      name            = "Build"
-      category        = "Build"
+      name            = "Deploy"
+      category        = "Deploy"
       provider        = "CodeBuild"
       version         = "1"
       owner           = "AWS"
