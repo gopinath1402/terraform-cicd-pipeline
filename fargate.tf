@@ -14,7 +14,7 @@ resource "aws_ecs_task_definition" "definition" {
   container_definitions    = <<DEFINITION
   [
   {
-    "image": "${var.account}.dkr.ecr.us-east-1.amazonaws.com/colearnrepo:latest",
+    "image": "${aws_ecr_repository.repo.repository_url}",
     "name": "project-container"
     }
     ]

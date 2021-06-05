@@ -1,4 +1,4 @@
-resource "aws_ecr_repository" "foo" {
+resource "aws_ecr_repository" "repo" {
   name                 = "colearnrepo"
   image_tag_mutability = "MUTABLE"
 
