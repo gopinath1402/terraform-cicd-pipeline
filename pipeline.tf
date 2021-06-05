@@ -71,7 +71,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       configuration = {
         FullRepositoryId     = "gopinath1402/terraform-cicd-pipeline"
         BranchName           = "main"
-        ConnectionArn        = var.codestar_connector_credentials
+        ConnectionArn        = var.tf_codestar_connector_credentials
         OutputArtifactFormat = "CODE_ZIP"
       }
     }
@@ -113,3 +113,85 @@ resource "aws_codepipeline" "cicd_pipeline" {
 #   name          = "connection"
 #   provider_type = "GitHub"
 # }
+
+#############################################################################
+
+resource "aws_codebuild_project" "app-image-build" {
+  name         = "app-image-build"
+  description  = "build the docker image and push to ecr"
+  service_role = aws_iam_role.tf-codebuild-role.arn
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type                = "BUILD_GENERAL1_SMALL"
+    image                       = "aws/codebuild/standard:4.0"
+    type                        = "LINUX_CONTAINER"
+    image_pull_credentials_type = "SERVICE_ROLE"
+  }
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = file("buildspec/application-buildspec.yml")
+  }
+}
+
+resource "aws_codepipeline" "app_cicd_pipeline" {
+
+  name     = "colearn-application-cicd"
+  role_arn = aws_iam_role.tf-codepipeline-role.arn
+
+  artifact_store {
+  
+  }
+
+  stage {
+    name = "Source"
+    action {
+      name             = "Source"
+      category         = "Source"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
+      version          = "1"
+      output_artifacts = ["app-code"]
+      configuration = {
+        FullRepositoryId     = "gopinath1402/colearn-app-pipeline"
+        BranchName           = "main"
+        ConnectionArn        = var.app_codestar_connector_credentials
+        OutputArtifactFormat = "CODE_ZIP"
+      }
+    }
+  }
+
+  stage {
+    name = "Plan"
+    action {
+      name            = "Build"
+      category        = "Build"
+      provider        = "CodeBuild"
+      version         = "1"
+      owner           = "AWS"
+      input_artifacts = ["app-code"]
+      configuration = {
+        ProjectName = "app-cicd-plan"
+      }
+    }
+  }
+
+  stage {
+    name = "deply"
+    action {
+      name            = "Build"
+      category        = "Build"
+      provider        = "CodeBuild"
+      version         = "1"
+      owner           = "AWS"
+      input_artifacts = ["app-code"]
+      configuration = {
+        ProjectName = "app-cicd-plan"
+      }
+    }
+  }
+  }
+}
