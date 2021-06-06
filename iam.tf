@@ -47,8 +47,12 @@ resource "aws_iam_role_policy_attachment" "tf-cicd-pipeline-attachment" {
   role       = aws_iam_role.tf-codepipeline-role.id 
 }
 
-resource "aws_iam_role_policy_attachment" "tf-cicd-pipeline-attachment" {
-  policy_arn = arn:aws:iam::aws:policy/AmazonECS_FullAccess
+data "aws_iam_policy" "ecs"{
+  arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "tf-cicd-pipeline-ecs" {
+  policy_arn = data.aws_iam_policy.ecs.arn
   role       = aws_iam_role.tf-codepipeline-role.id 
 }
 
