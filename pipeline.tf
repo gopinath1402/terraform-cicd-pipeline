@@ -137,30 +137,6 @@ resource "aws_codebuild_project" "app-image-build" {
   }
 }
 
-resource "aws_codebuild_project" "application-apply" {
-  name         = "app-cicd-apply"
-  description  = "Apply stage for terraform"
-  service_role = aws_iam_role.tf-codebuild-role.arn
-
-  artifacts {
-    type = "CODEPIPELINE"
-  }
-
-  environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "hashicorp/terraform:0.14.3"
-    type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
-    registry_credential {
-      credential          = var.dockerhub_credentials
-      credential_provider = "SECRETS_MANAGER"
-    }
-  }
-  source {
-    type      = "CODEPIPELINE"
-    buildspec = file("buildspec/apply-buildspec.yml")
-  }
-}
 
 resource "aws_codepipeline" "app_cicd_pipeline" {
 
@@ -199,6 +175,7 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
       version         = "1"
       owner           = "AWS"
       input_artifacts = ["app-code"]
+      output_artifacts = ["image_json"]
       configuration = {
         ProjectName = "app-image-build"
       }
@@ -209,13 +186,15 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
     name = "Deploy"
     action {
       name            = "Deploy"
-      category        = "Build"
-      provider        = "CodeBuild"
+      category        = "Deploy"
+      provider        = "ECS"
       version         = "1"
       owner           = "AWS"
-      input_artifacts = ["app-code"]
+      input_artifacts = ["image_json"]
       configuration = {
-        ProjectName = "app-cicd-plan"
+        "FileName" : "image.json"
+        "ClusterName" : "colearn-cluster",
+        "ServiceName" : "colearn-service"
       }
     }
   }
