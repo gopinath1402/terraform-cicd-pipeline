@@ -27,7 +27,7 @@ resource "aws_security_group" "allow" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-    ingress {
+  ingress {
     description      = "TLS from LB"
     from_port        = 80
     to_port          = 80
@@ -55,19 +55,19 @@ module "alb" {
 
   load_balancer_type = "application"
 
-  vpc_id             = module.vpc.vpc_id
-  subnets            = module.vpc.public_subnets
-  security_groups    = [aws_security_group.allow.id]
+  vpc_id          = module.vpc.vpc_id
+  subnets         = module.vpc.public_subnets
+  security_groups = [aws_security_group.allow.id]
 
   target_groups = [
     {
-      name      = "app"
+      name             = "app"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "ip"
     }
   ]
-  
+
   http_tcp_listeners = [
     {
       port               = 80

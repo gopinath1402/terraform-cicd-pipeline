@@ -126,10 +126,10 @@ resource "aws_codebuild_project" "app-image-build" {
   }
 
   environment {
-    compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
-    type         = "LINUX_CONTAINER"
-    privileged_mode             = true
+    compute_type    = "BUILD_GENERAL1_SMALL"
+    image           = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
+    type            = "LINUX_CONTAINER"
+    privileged_mode = true
 
   }
   source {
@@ -169,12 +169,12 @@ resource "aws_codepipeline" "app_cicd_pipeline" {
   stage {
     name = "Plan"
     action {
-      name            = "Build"
-      category        = "Build"
-      provider        = "CodeBuild"
-      version         = "1"
-      owner           = "AWS"
-      input_artifacts = ["app-code"]
+      name             = "Build"
+      category         = "Build"
+      provider         = "CodeBuild"
+      version          = "1"
+      owner            = "AWS"
+      input_artifacts  = ["app-code"]
       output_artifacts = ["image_json"]
       configuration = {
         ProjectName = "app-image-build"
